@@ -1,0 +1,41 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "nodemon --config nodemon.json ./app.js localhost 8081",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^2.0.18"
+  },
+  "dependencies": {
+    "@google-cloud/storage": "^7.2.0",
+    "airtable": "^0.11.4",
+    "axios": "^0.27.2",
+    "baileys": "^6.7.18",
+    "bcrypt": "^5.1.0",
+    "cep-promise": "^4.4.0",
+    "cors": "^2.8.5",
+    "depcheck": "^1.4.3",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "forever": "^4.0.3",
+    "googleapis": "^105.0.0",
+    "jsonwebtoken": "^8.5.1",
+    "moment": "^2.29.4",
+    "multer": "^1.4.5-lts.1",
+    "nodemailer": "^6.9.1",
+    "pg": "^8.7.3",
+    "qrcode": "^1.5.4",
+    "sequelize": "^6.37.7",
+    "socket.io": "^4.6.1"
+  },
+  "engines": {
+    "node": "20.x"
+  }
+}
