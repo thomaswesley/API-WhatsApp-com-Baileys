@@ -77,16 +77,12 @@ async function conectarWhatsApp() {
               width: 400
             })
 
-            setInterval(() => {
-
-              ioRef.emit('qr', { 
-                ts: latestQRAt,
-                error: false,
-                message: 'WhatsApp não está conectado. Por favor, escaneie o QR Code.',
-                svg: svg 
-              })
-
-            }, 10000);
+            ioRef.emit('qr', { 
+              ts: latestQRAt,
+              error: false,
+              message: 'WhatsApp não está conectado. Por favor, escaneie o QR Code.',
+              svg: svg 
+            })
 
           } catch (e) {
             console.warn('Falha ao gerar SVG do QR:', e?.message || e)
