@@ -77,12 +77,16 @@ async function conectarWhatsApp() {
               width: 400
             })
 
-            ioRef.emit('qr', { 
-              ts: latestQRAt,
-              error: false,
-              message: 'WhatsApp não está conectado. Por favor, escaneie o QR Code.',
-              svg: svg 
-            })
+            setInterval(() => {
+
+              ioRef.emit('qr', { 
+                ts: latestQRAt,
+                error: false,
+                message: 'WhatsApp não está conectado. Por favor, escaneie o QR Code.',
+                svg: svg 
+              })
+
+            }, 10000);
 
           } catch (e) {
             console.warn('Falha ao gerar SVG do QR:', e?.message || e)
@@ -125,6 +129,7 @@ async function conectarWhatsApp() {
       }
 
       if (connection === 'close') {
+
         connected = false
         latestQR = null
         const code = lastDisconnect?.error?.output?.statusCode
