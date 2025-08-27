@@ -58,7 +58,7 @@ async function conectarWhatsApp() {
 
     sock.ev.on('connection.update', async ({ connection, lastDisconnect, qr }) => {
 
-      if (qr) {
+      if (qr && !connected) {
 
         if (typeof qr !== 'string' || !qr.trim()) return
 
@@ -154,7 +154,9 @@ async function conectarWhatsApp() {
     })
 
     sock.ev.on('messages.upsert', async ({ messages, type }) => {
+
       try {
+
         const msg = messages?.[0]
         if (!msg || msg.key.fromMe) return
 
