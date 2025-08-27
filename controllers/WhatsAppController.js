@@ -205,7 +205,7 @@ async function conectarWhatsApp() {
           : meJid
 
         // marca como lida (opcional)
-        try { await sock.readMessages([msg.key]) } catch {}
+        //try { await sock.readMessages([msg.key]) } catch {}
         
         const dataBot = {
           message: text || '',
