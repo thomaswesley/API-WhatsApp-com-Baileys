@@ -77,16 +77,12 @@ async function conectarWhatsApp() {
               width: 400
             })
 
-            setTimeout(function() {
-
-              ioRef.emit('qr', { 
-                ts: latestQRAt,
-                error: false,
-                message: 'WhatsApp não está conectado. Por favor, escaneie o QR Code.',
-                svg: svg 
-              })
-
-            }, 5000);
+            ioRef.emit('qr', { 
+              ts: latestQRAt,
+              error: false,
+              message: 'WhatsApp não está conectado. Por favor, escaneie o QR Code.',
+              svg: svg 
+            })
 
           } catch (e) {
             console.warn('Falha ao gerar SVG do QR:', e?.message || e)
@@ -135,17 +131,13 @@ async function conectarWhatsApp() {
         const code = lastDisconnect?.error?.output?.statusCode
         console.warn('A conexão do WhatsApp foi fechada. statusCode:', code)
 
-        setTimeout(function() {
-
-          if (ioRef) {
-            ioRef.emit('disconnected', { 
-              error: true,
-              message: 'O WhatsApp está desconectado. Atualize a página para gerar um novo QR Code.', 
-              connected: false 
-            })
-          }
-
-        }, 5000);
+        if (ioRef) {
+          ioRef.emit('disconnected', { 
+            error: true,
+            message: 'O WhatsApp está desconectado. Atualize a página para gerar um novo QR Code.', 
+            connected: false 
+          })
+        }
 
         // Se sessão saiu/loggedOut, apaga credenciais para forçar novo pareamento
         const isLoggedOut = code === DisconnectReason.loggedOut
