@@ -31,7 +31,6 @@ const io = new SocketIOServer(server, {
   cors: {
     origin: FRONTEND,
     methods: ['GET', 'POST'],
-    allowedHeaders: ['my-custom-header'],
     credentials: true
   }
 })
