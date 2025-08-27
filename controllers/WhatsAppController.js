@@ -77,12 +77,16 @@ async function conectarWhatsApp() {
               width: 400
             })
 
-            ioRef.emit('qr', { 
-              ts: latestQRAt,
-              error: false,
-              message: 'WhatsApp não está conectado. Por favor, escaneie o QR Code.',
-              svg: svg 
-            })
+            setTimeout(function() {
+
+              ioRef.emit('qr', { 
+                ts: latestQRAt,
+                error: false,
+                message: 'WhatsApp não está conectado. Por favor, escaneie o QR Code.',
+                svg: svg 
+              })
+
+            }, 5000);
 
           } catch (e) {
             console.warn('Falha ao gerar SVG do QR:', e?.message || e)
@@ -131,13 +135,17 @@ async function conectarWhatsApp() {
         const code = lastDisconnect?.error?.output?.statusCode
         console.warn('A conexão do WhatsApp foi fechada. statusCode:', code)
 
-        if (ioRef) {
-          ioRef.emit('disconnected', { 
-            error: true,
-            message: 'O WhatsApp está desconectado. Atualize a página para gerar um novo QR Code.', 
-            connected: false 
-          })
-        }
+        setTimeout(function() {
+
+          if (ioRef) {
+            ioRef.emit('disconnected', { 
+              error: true,
+              message: 'O WhatsApp está desconectado. Atualize a página para gerar um novo QR Code.', 
+              connected: false 
+            })
+          }
+
+        }, 5000);
 
         // Se sessão saiu/loggedOut, apaga credenciais para forçar novo pareamento
         const isLoggedOut = code === DisconnectReason.loggedOut
@@ -321,11 +329,11 @@ class WhatsAppController {
       } 
 
       if (typeof latestQR !== 'string' || !latestQR.trim()) {
-        return res.status(503).json({ error: true, message: 'O QR Code ainda não está disponível. Tente de novo.' })
+        return res.status(503).json({ error: true, message: 'O QR Code ainda não está disponível. Atualize a página para gerar um novo QR Code.' })
       }
 
       if (Date.now() - latestQRAt > 20000) {
-        return res.status(503).json({ error: true, message: 'O QR Code está expirado. Aguarde o próximo.' })
+        return res.status(503).json({ error: true, message: 'O QR Code está expirado. Atualize a página para gerar um novo QR Code.' })
       }
 
       const svg = await QRCode.toString(latestQR, {
