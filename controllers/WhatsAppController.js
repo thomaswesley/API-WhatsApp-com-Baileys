@@ -58,7 +58,7 @@ async function conectarWhatsApp() {
 
     sock.ev.on('connection.update', async ({ connection, lastDisconnect, qr }) => {
 
-      if (qr && !connected) {
+      if (qr) {
 
         if (typeof qr !== 'string' || !qr.trim()) return
 
@@ -124,7 +124,7 @@ async function conectarWhatsApp() {
         } 
       }
 
-      if (connection === 'close' && connected) {
+      if (connection === 'close') {
 
         connected = false
         latestQR = null
