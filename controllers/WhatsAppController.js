@@ -5,6 +5,10 @@ import axios from 'axios'
 import fs from 'fs'
 import path from 'path'
 import MessageLog from '../models/WhatsApp.js'
+import { useWaAuthState } from '../utils/waAuthState.js'
+import sequelize from '../db/connectDatabasePostgreSQL.js'
+import pino from 'pino'
+
 
 let sock = null
 let latestQR = null
@@ -14,7 +18,8 @@ let initializing = null
 let ioRef = null
 let photo = ''
 
-const logger = P({ level: 'silent' })
+//const logger = P({ level: 'silent' })
+const waLogger = pino({ level: 'silent' || 'fatal' })
 
 function destinatario(input) {
   
@@ -43,11 +48,12 @@ async function conectarWhatsApp() {
 
   initializing = (async () => {
 
-    const { state, saveCreds } = await useMultiFileAuthState('./auth')
+    //const { state, saveCreds } = await useMultiFileAuthState('./auth')
+    const { state, saveCreds, wipe } = await useWaAuthState(sequelize, 'default')
     const { version } = await fetchLatestBaileysVersion()
 
     sock = makeWASocket({
-      logger,
+      waLogger,
       printQRInTerminal: false,
       auth: state,
       version,
@@ -143,7 +149,8 @@ async function conectarWhatsApp() {
         const isLoggedOut = code === DisconnectReason.loggedOut
 
         if (isLoggedOut) {
-          try { fs.rmSync(path.resolve('./auth'), { recursive: true, force: true }) } catch {}
+          //try { fs.rmSync(path.resolve('./auth'), { recursive: true, force: true }) } catch {}
+          try { await wipe() } catch {}
         }
 
         const shouldReconnect = !isLoggedOut
@@ -178,7 +185,7 @@ async function conectarWhatsApp() {
         if (m.imageMessage) {
           try {
             // baixa o binário da MÍDIA dessa mesma msg
-            const buf = await downloadMediaMessage(msg, 'buffer', {}, { logger })
+            const buf = await downloadMediaMessage(msg, 'buffer', {}, { waLogger })
             imageMime    = m.imageMessage.mimetype || 'image/jpeg'
             imageCaption = m.imageMessage.caption || ''
             imageDataUrl = `data:${imageMime};base64,${buf.toString('base64')}`
