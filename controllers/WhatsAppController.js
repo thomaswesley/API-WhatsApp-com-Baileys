@@ -90,7 +90,7 @@ async function conectarWhatsApp() {
         }
       }
 
-      if (connection === 'open' && !connected) {
+      if (connection === 'open') {
 
         connected = true
         latestQR = null
@@ -124,7 +124,7 @@ async function conectarWhatsApp() {
         } 
       }
 
-      if (connection === 'close' && connected) {
+      if (connection === 'close') {
 
         connected = false
         latestQR = null
