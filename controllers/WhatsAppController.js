@@ -124,7 +124,7 @@ async function conectarWhatsApp() {
         } 
       }
 
-      if (connection === 'close') {
+      if (connection === 'close' && connected) {
 
         connected = false
         latestQR = null
