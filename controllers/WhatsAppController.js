@@ -158,7 +158,7 @@ async function conectarWhatsApp() {
         } 
       }
 
-      if (connection === 'close') {
+      if (connection === 'close' && (lastDisconnect?.error)?.output?.statusCode === DisconnectReason.restartRequired) {
 
         /*connected = false
         latestQR = null
