@@ -31,6 +31,21 @@ function destinatario(input) {
   return `${digits}@s.whatsapp.net`;
 }
 
+let reconnecting = false
+const sleep = (ms) => new Promise(r => setTimeout(r, ms))
+async function scheduleReconnect(delay = 2000) {
+  if (reconnecting) return
+  reconnecting = true
+  try {
+    await sleep(delay)
+    await conectarWhatsApp()
+  } catch (e) {
+    console.error('Reconn error', e)
+  } finally {
+    reconnecting = false
+  }
+}
+
 async function conectarWhatsApp() {
 
   if (sock && connected) {
@@ -46,12 +61,25 @@ async function conectarWhatsApp() {
     const { state, saveCreds } = await useMultiFileAuthState('./auth')
     const { version } = await fetchLatestBaileysVersion()
 
-    sock = makeWASocket({
+    /*sock = makeWASocket({
       logger,
       printQRInTerminal: false,
       auth: state,
       version,
       browser: Browsers.appropriate('Chrome')
+    })*/
+
+    sock = makeWASocket({
+      logger,
+      printQRInTerminal: false,
+      auth: state,
+      version,
+      browser: Browsers.appropriate('Chrome'),
+      markOnlineOnConnect: false,
+      syncFullHistory: false,
+      connectTimeoutMs: 60_000,
+      defaultQueryTimeoutMs: 60_000,
+      keepAliveIntervalMs: 30_000
     })
 
     sock.ev.on('creds.update', saveCreds)
@@ -90,7 +118,7 @@ async function conectarWhatsApp() {
         }
       }
 
-      if (connection === 'open') {
+      if (connection === 'open' && !connected) {
 
         connected = true
         latestQR = null
@@ -102,11 +130,16 @@ async function conectarWhatsApp() {
         const meJid = jidNormalizedUser(raw)
 
         let photoUrl = null
+
         try {
+
           photoUrl = await sock.profilePictureUrl(meJid, 'image')
           photo = photoUrl
+
         } catch {}
+
         if (!photoUrl) {
+
           try { 
             photoUrl = await sock.profilePictureUrl(meJid, 'preview') 
             photo = photoUrl
@@ -126,7 +159,7 @@ async function conectarWhatsApp() {
 
       if (connection === 'close') {
 
-        connected = false
+        /*connected = false
         latestQR = null
         const code = lastDisconnect?.error?.output?.statusCode
         console.warn('A conexão do WhatsApp foi fechada. statusCode:', code)
@@ -150,7 +183,33 @@ async function conectarWhatsApp() {
 
         if (shouldReconnect) {
           conectarWhatsApp().catch(err => console.error('Reconn error', err))
+        }*/
+
+        connected = false
+        latestQR = null
+        const code = lastDisconnect?.error?.output?.statusCode
+        console.warn('A conexão do WhatsApp foi fechada. statusCode:', code)
+        
+        if (code === DisconnectReason.loggedOut /* 401 */) {
+
+          // sessão inválida → limpa ./auth e pede novo pareamento
+          try { fs.rmSync(path.resolve('./auth'), { recursive: true, force: true }) } catch {}
+          
+          if (ioRef) ioRef.emit('disconnected', { error: true, message: 'O WhatsApp está desconectado. Atualize a página para gerar um novo QR Code.', connected: false })
+          
+          return
         }
+        
+        if (code === DisconnectReason.connectionReplaced /* 440 */) {
+
+          // outra sessão assumiu → não reconectar em loop
+          if (ioRef) ioRef.emit('disconnected', { error: true, message: 'Conexão substituída por outra sessão. Gere um novo QR.', connected: false })
+          
+          return
+        }
+        
+        // demais casos: tenta reconectar depois de um pequeno atraso
+        scheduleReconnect(2000)
       }
     })
 
