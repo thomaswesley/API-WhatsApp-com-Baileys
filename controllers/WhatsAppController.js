@@ -159,7 +159,7 @@ async function conectarWhatsApp() {
 
       if (connection === 'close') {
 
-        /*connected = false
+        connected = false
         latestQR = null
         const code = lastDisconnect?.error?.output?.statusCode
         console.warn('A conexão do WhatsApp foi fechada. statusCode:', code)
@@ -183,14 +183,14 @@ async function conectarWhatsApp() {
 
         if (shouldReconnect) {
           conectarWhatsApp().catch(err => console.error('Reconn error', err))
-        }*/
+        }
 
-        connected = false
+        /*connected = false
         latestQR = null
         const code = lastDisconnect?.error?.output?.statusCode
         console.warn('A conexão do WhatsApp foi fechada. statusCode:', code)
         
-        if (code === DisconnectReason.loggedOut /* 401 */) {
+        if (code === DisconnectReason.loggedOut) {
 
           // sessão inválida → limpa ./auth e pede novo pareamento
           try { fs.rmSync(path.resolve('./auth'), { recursive: true, force: true }) } catch {}
@@ -200,7 +200,7 @@ async function conectarWhatsApp() {
           return
         }
         
-        if (code === DisconnectReason.connectionReplaced /* 440 */) {
+        if (code === DisconnectReason.connectionReplaced) {
 
           // outra sessão assumiu → não reconectar em loop
           if (ioRef) ioRef.emit('disconnected', { error: true, message: 'Conexão substituída por outra sessão. Gere um novo QR.', connected: false })
@@ -209,7 +209,7 @@ async function conectarWhatsApp() {
         }
         
         // demais casos: tenta reconectar depois de um pequeno atraso
-        scheduleReconnect(2000)
+        scheduleReconnect(2000)*/
       }
     })
 
