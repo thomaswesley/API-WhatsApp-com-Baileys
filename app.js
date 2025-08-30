@@ -2,10 +2,12 @@ import 'dotenv/config'
 
 // === Guardas globais de erro (mantêm o processo vivo) ===
 process.on('unhandledRejection', (reason) => {
-  console.error('UnhandledRejection:', reason)
+  console.log('Guardas globais de erro (mantêm o processo vivo)');
+  console.error('UnhandledRejection (Rejeição não atendida):', reason)
 })
 process.on('uncaughtException', (err) => {
-  console.error('UncaughtException:', err)
+  console.log('Guardas globais de erro (mantêm o processo vivo)');
+  console.error('UncaughtException (Exceção não capturada):', err)
 })
 // =========================================================
 

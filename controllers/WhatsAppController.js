@@ -33,6 +33,7 @@ function destinatario(input) {
 
 let reconnecting = false
 const sleep = (ms) => new Promise(r => setTimeout(r, ms))
+
 async function scheduleReconnect(delay = 2000) {
   if (reconnecting) return
   reconnecting = true
@@ -159,7 +160,7 @@ async function conectarWhatsApp() {
 
       if (connection === 'close') {
 
-        connected = false
+        /*connected = false
         latestQR = null
         const code = lastDisconnect?.error?.output?.statusCode
         console.warn('A conexão do WhatsApp foi fechada. statusCode:', code)
@@ -183,9 +184,9 @@ async function conectarWhatsApp() {
 
         if (shouldReconnect) {
           conectarWhatsApp().catch(err => console.error('Reconn error', err))
-        }
+        }*/
 
-        /*connected = false
+        connected = false
         latestQR = null
         const code = lastDisconnect?.error?.output?.statusCode
         console.warn('A conexão do WhatsApp foi fechada. statusCode:', code)
@@ -209,7 +210,7 @@ async function conectarWhatsApp() {
         }
         
         // demais casos: tenta reconectar depois de um pequeno atraso
-        scheduleReconnect(2000)*/
+        scheduleReconnect(2000)
       }
     })
 
