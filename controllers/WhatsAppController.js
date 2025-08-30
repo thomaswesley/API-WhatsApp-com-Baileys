@@ -158,9 +158,9 @@ async function conectarWhatsApp() {
         } 
       }
 
-      if (connection === 'close' && (lastDisconnect?.error)?.output?.statusCode === DisconnectReason.restartRequired) {
+      if (connection === 'close') {
 
-        /*connected = false
+        connected = false
         latestQR = null
         const code = lastDisconnect?.error?.output?.statusCode
         console.warn('A conexão do WhatsApp foi fechada. statusCode:', code)
@@ -184,9 +184,9 @@ async function conectarWhatsApp() {
 
         if (shouldReconnect) {
           conectarWhatsApp().catch(err => console.error('Reconn error', err))
-        }*/
+        }
 
-        connected = false
+        /*connected = false
         latestQR = null
         const code = lastDisconnect?.error?.output?.statusCode
         console.warn('A conexão do WhatsApp foi fechada. statusCode:', code)
@@ -210,7 +210,7 @@ async function conectarWhatsApp() {
         }
         
         // demais casos: tenta reconectar depois de um pequeno atraso
-        scheduleReconnect(2000)
+        scheduleReconnect(2000)*/
       }
     })
 
